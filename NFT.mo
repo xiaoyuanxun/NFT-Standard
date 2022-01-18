@@ -28,8 +28,6 @@ import TrieMap "mo:base/TrieMap";
 import TrieSet "mo:base/TrieSet";
 import Types "Types";
 
-// 调用storage记得删除//xun
-// 此处仅为了方便不编译报错
 shared(msg) actor class NFToken(
     _logo: Text,
     _name: Text, 
