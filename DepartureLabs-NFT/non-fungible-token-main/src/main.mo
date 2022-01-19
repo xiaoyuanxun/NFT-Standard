@@ -31,7 +31,35 @@ shared({ caller = hub }) actor class Hub() = this {
     stable var BROKER_FAILED_CALL_LIMIT = 25;
 
     stable var id          = 0;
-    stable var payloadSize = 0;
+    stable var payloadSize = 0; // payload -> 有效载荷
+    
+    // Token.Token
+    // public type Token = {
+    //     payload     : [Blob];
+    //     contentType : Text;
+    //     createdAt   : Int;
+    //     properties  : Property.Properties;
+    //     isPrivate   : Bool;
+    // };
+
+    // public type Properties = [Property];
+    // public type Property = {
+    //     name      : Text; 
+    //     value     : Value; 
+    //     immutable : Bool;
+    // };
+
+    // public type Value = {
+    //     #Int       : Int; 
+    //     #Nat       : Nat;
+    //     #Float     : Float;
+    //     #Text      : Text; 
+    //     #Bool      : Bool; 
+    //     #Class     : [Property];
+    //     #Principal : Principal;
+    //     #Empty;
+    // };
+    
     stable var nftEntries : [(
         Text, // Token Identifier.
         (
@@ -40,7 +68,7 @@ shared({ caller = hub }) actor class Hub() = this {
         ),
         Token.Token, // NFT data.
     )] = [];
-    let nfts = Token.NFTs(
+    let nfts = Token.NFTs( // Token.NFTs -> public class
         id, 
         payloadSize, 
         nftEntries,

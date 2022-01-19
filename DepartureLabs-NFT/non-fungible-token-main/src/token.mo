@@ -73,8 +73,8 @@ module Token {
     };
 
     public class NFTs(
-        lastID        : Nat,
-        lastTotalSize : Nat,
+        lastID        : Nat, // id,
+        lastTotalSize : Nat, //payloadSize, 
         nftEntries : [(
             Text, // Token Identifier.
             (
@@ -90,10 +90,17 @@ module Token {
         var totalSize = lastTotalSize;
         public func payloadSize() : Nat { id; };
 
+        // 分阶段数据
         var stagedData = Staged.empty<Text>(
             0, Text.equal, Text.hash,
         );
-
+    //         public type Token = {
+    //     payload     : [Blob];
+    //     contentType : Text;
+    //     createdAt   : Int;
+    //     properties  : Property.Properties;
+    //     isPrivate   : Bool;
+    // };
         let nfts = HashMap.HashMap<Text, Token>(
             nftEntries.size(),
             Text.equal,
@@ -114,6 +121,7 @@ module Token {
             Principal.equal,
             Principal.hash,
         );
+        // init
         for ((t, (p, ps), nft) in Iter.fromArray(nftEntries)) {
             nfts.put(t, nft);
             if (ps.size() != 0) {
@@ -151,6 +159,18 @@ module Token {
             return nfts.size();
         };
 
+    //     public type WriteNFT = {
+    //     #Init : {
+    //         size     : Nat; 
+    //         callback : ?Types.Callback;
+    //     };
+    //     #Chunk : {
+    //         id       : Text;
+    //         chunk    : Blob; 
+    //         callback : ?Types.Callback;
+    //     };
+    // };
+        // 分片写入数据，类似于我们的PUT
         public func writeStaged(data : Staged.WriteNFT) : async Result.Result<Text, Text> {
             switch (data) {
                 case (#Init(v)) {
@@ -223,9 +243,21 @@ module Token {
             };
         };
 
+    //         public type Egg = {
+    //     payload : {
+    //         #Payload    : Blob;
+    //         #StagedData : Text;
+    //     };
+    //     contentType : Text;
+    //     owner       : ?Principal;
+    //     properties  : Property.Properties;
+    //     isPrivate   : Bool;
+    // };
+
         public func mint(hub : Principal, egg : Egg) : async Result.Result<(Text, Principal), Text> {
             let (size, id_) : (Nat, Text) = switch (egg.payload) {
-                case (#Payload(v)) {
+                // 直接传入Blob数据，不需要分片
+                case (#Payload(v)) {  
                     let id_ = Nat.toText(id);
                     id += 1;
                     nfts.put(id_, {
@@ -275,13 +307,14 @@ module Token {
             };
 
             nftToOwner.put(id_, owner);
+            //ownerToNFT = HashMap.HashMap<Principal, [Text]>
+            //将Token Identifier = id_ 写入到map中
             MapHelper.add<Principal, Text>(
                 ownerToNFT,
                 owner,
                 id_,
                 MapHelper.textEqual(id_),
             );
-
             #ok(id_, owner);
         };
 
