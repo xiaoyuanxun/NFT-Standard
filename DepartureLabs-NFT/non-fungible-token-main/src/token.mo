@@ -88,7 +88,7 @@ module Token {
         public func currentID() : Nat { id; };
 
         var totalSize = lastTotalSize;
-        public func payloadSize() : Nat { id; };
+        public func payloadSize() : Nat { id; };// lastTotalSize ???
 
         // 分阶段数据
         var stagedData = Staged.empty<Text>(

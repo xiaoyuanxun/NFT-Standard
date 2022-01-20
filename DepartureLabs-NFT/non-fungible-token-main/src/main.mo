@@ -35,7 +35,7 @@ shared({ caller = hub }) actor class Hub() = this {
     
     // Token.Token
     // public type Token = {
-    //     payload     : [Blob];
+    //     payload     : [Blob]; //源文件
     //     contentType : Text;
     //     createdAt   : Int;
     //     properties  : Property.Properties;
@@ -68,20 +68,27 @@ shared({ caller = hub }) actor class Hub() = this {
         ),
         Token.Token, // NFT data.
     )] = [];
-    let nfts = Token.NFTs( // Token.NFTs -> public class
-        id, 
-        payloadSize, 
-        nftEntries,
+    let nfts = Token.NFTs( // Token.NFTs -> public class // 是新建了一个canister
+        id, // 0
+        payloadSize, //0
+        nftEntries,// []
     );
 
+    // Static.Asset
+    // public type Asset = {
+    //     contentType : Text;
+    //     payload     : [Blob];
+    // };
     stable var staticAssetsEntries : [(
         Text,        // Asset Identifier (path).
         Static.Asset // Asset data.
     )] = [];
-    let staticAssets = Static.Assets(staticAssetsEntries);
+    let staticAssets = Static.Assets(staticAssetsEntries);// 静态资产canister？？
     
     stable var contractOwners : [Principal] = [hub];
 
+    // broker -> 经纪人
+    // Event.Callback -> 事件callback ???
     stable var messageBrokerCallback : ?Event.Callback = null;
     stable var messageBrokerCallsSinceLastTopup : Nat = 0;
     stable var messageBrokerFailedCalls : Nat = 0;
